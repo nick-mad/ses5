@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Погодний інформер - підписка на оновлення</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+        .subscription-form {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #3498db;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #7f8c8d;
+        }
+        .alert {
+            display: none;
+            margin-top: 20px;
+        }
+        .form-floating {
+            margin-bottom: 15px;
+        }
+        .btn-subscribe {
+            background-color: #3498db;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-subscribe:hover {
+            background-color: #2980b9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .weather-icon {
+            font-size: 50px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="subscription-form">
+        <div class="header">
+            <div class="weather-icon">☁️</div>
+            <h1>Погодний інформер</h1>
+            <p>Підпишіться на оновлення погоди для вашого міста</p>
+        </div>
+
+        <form id="subscribe-form">
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                <label for="email">Email адреса</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="city" placeholder="Москва" required>
+                <label for="city">Місто (англійською)</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <select class="form-select" id="frequency" required>
+                    <option value="">Виберіть частоту оновлень</option>
+                    <option value="hourly">Щогодини</option>
+                    <option value="daily">Щодня</option>
+                </select>
+                <label for="frequency">Частота оновлень</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-subscribe">Підписатися</button>
+        </form>
+
+        <div class="alert alert-success" role="alert" id="success-alert">
+            Підписка успішно оформлена! На ваш email надіслано листа для підтвердження.
+        </div>
+
+        <div class="alert alert-danger" role="alert" id="error-alert">
+            Помилка під час оформлення підписки. Будь ласка, спробуйте пізніше.
+        </div>
+
+        <div class="footer">
+            <p>Отримуйте актуальну інформацію про погоду у вашому місті.<br>© 2023 Погодний інформер</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('subscribe-form');
+        const successAlert = document.getElementById('success-alert');
+        const errorAlert = document.getElementById('error-alert');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Скрываем предыдущие сообщения
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            // Собираем данные формы
+            const email = document.getElementById('email').value;
+            const city = document.getElementById('city').value;
+            const frequency = document.getElementById('frequency').value;
+
+            // Отправляем запрос на API
+            fetch('/api/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    city: city,
+                    frequency: frequency
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        // Показываем сообщение об ошибке
+                        errorAlert.textContent = data.message || 'Сталася помилка під час підписки.';
+                        errorAlert.style.display = 'block';
+                    } else {
+                        // Показываем сообщение об успешной подписке
+                        successAlert.style.display = 'block';
+                        // Очищаем форму
+                        form.reset();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorAlert.textContent = 'Виникла помилка при підключенні до сервера.';
+                    errorAlert.style.display = 'block';
+                });
+        });
+    });
+</script>
+</body>
+</html>

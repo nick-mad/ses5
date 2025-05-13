@@ -1,0 +1,12 @@
+nelmio_api_doc:
+  documentation:
+    servers:
+      - url: http://127.0.0.1:8000
+        description: API over HTTP
+    info:
+      title: Weather Forecast API
+      description: API для подписки на прогноз погоды
+      version: 1.0.0
+  areas:
+    path_patterns:
+      - ^/api(?!/doc$)
