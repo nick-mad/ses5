@@ -9,7 +9,10 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpq-dev \
     cron \
-    && docker-php-ext-install zip intl pdo pdo_pgsql
+    nginx \
+    && docker-php-ext-install zip intl pdo pdo_pgsql \
+
+COPY docker/default.conf /etc/nginx/conf.d/default.conf
 
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
