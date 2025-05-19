@@ -35,4 +35,5 @@ RUN chmod +x bin/console \
 
 # Запускаем PHP-FPM по умолчанию
 #CMD ["php-fpm"]
-CMD ["sh", "-c", "printenv > /etc/environment && cron && php-fpm"]
+CMD ["sh", "-c", "printenv > /etc/environment && cron && php-fpm -D && nginx -g 'daemon off;'"]
+
