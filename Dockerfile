@@ -10,9 +10,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     cron \
     nginx \
-    && docker-php-ext-install zip intl pdo pdo_pgsql \
-
-COPY docker/default.conf /etc/nginx/conf.d/default.conf
+    && docker-php-ext-install zip intl pdo pdo_pgsql
 
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -38,5 +36,4 @@ RUN chmod +x bin/console \
 
 # Запускаем PHP-FPM по умолчанию
 #CMD ["php-fpm"]
-CMD ["sh", "-c", "printenv > /etc/environment && cron && php-fpm -D && nginx -g 'daemon off;'"]
-
+CMD ["sh", "-c", "printenv > /etc/environment && cron && php-fpm"]
